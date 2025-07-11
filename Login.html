@@ -1,0 +1,61 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const taskInput = document.getElementById('task-input');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const taskList = document.getElementById('task-list');
+
+    let tasks = [];
+
+    addTaskBtn.addEventListener('click', addTask);
+
+    function addTask() {
+        const taskText = taskInput.value.trim();
+        if (taskText !== '') {
+            const task = {
+                text: taskText,
+                completed: false
+            };
+            tasks.push(task);
+            renderTaskList();
+            taskInput.value = '';
+        }
+    }
+
+    function renderTaskList() {
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const taskElement = document.createElement('li');
+            taskElement.classList.add('task');
+            if (task.completed) {
+                taskElement.classList.add('completed');
+            }
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.addEventListener('change', () => toggleTaskCompleted(index));
+
+            const taskText = document.createElement('span');
+            taskText.textContent = task.text;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.classList.add('remove-btn');
+            removeBtn.addEventListener('click', () => removeTask(index));
+
+            taskElement.appendChild(checkbox);
+            taskElement.appendChild(taskText);
+            taskElement.appendChild(removeBtn);
+            taskList.appendChild(taskElement);
+        });
+    }
+
+    function toggleTaskCompleted(index) {
+        tasks[index].completed = !tasks[index].completed;
+        renderTaskList();
+    }
+
+    function removeTask(index) {
+        tasks.splice(index, 1);
+        renderTaskList();
+    }
+});
